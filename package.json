@@ -9,10 +9,17 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "anydl": "file:",
+    "base64-arraybuffer": "^1.0.2",
     "expo": "~52.0.38",
+    "expo-clipboard": "~7.0.1",
+    "expo-file-system": "~18.0.11",
+    "expo-media-library": "~17.0.6",
+    "expo-share-intent": "^3.2.2",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
-    "react-native": "0.76.7"
+    "react-native": "0.76.7",
+    "expo-linking": "~7.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
