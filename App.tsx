@@ -24,15 +24,22 @@ import { TextInput, Button, TouchableOpacity, Alert, NativeEventEmitter, NativeM
 import * as Clipboard from "expo-clipboard";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
+import { MMKVLoader, useMMKVStorage } from 'react-native-mmkv-storage';
 import { encode } from "base64-arraybuffer";
 import React, { useEffect } from "react";
 import { ShareIntentProvider, useShareIntentContext } from "expo-share-intent";
 import { View, Text } from "react-native";
 import { useState } from "react";
 
+
+
+const storage = new MMKVLoader().initialize();
+
 const Home = () => {
   const { hasShareIntent, shareIntent, resetShareIntent, error } = useShareIntentContext();
   const [link, setLink] = useState("");
+  const [serverLink, setServerLink] = useMMKVStorage('serverLink', storage, 'http://10.46.77.173:10000/download');
+
 
   useEffect(() => {
     if (hasShareIntent) {
@@ -45,6 +52,10 @@ const Home = () => {
   const pasteFromClipboard = async () => {
     const clipboardContent = await Clipboard.getStringAsync();
     setLink(clipboardContent);
+  };
+
+  const sanitizeFilename = (filename: string): string => {
+    return filename.replace(/[^a-zA-Z0-9._-]/g, "_"); // Replace invalid characters with "_"
   };
 
   const fetchVideo = async () => {
@@ -71,8 +82,8 @@ const Home = () => {
             if (match) filename = match[1];
         }
   
-        filename = filename.replace(/\s+/g, "_");
-        const fileUri = FileSystem.documentDirectory + filename;
+        filename = sanitizeFilename(filename); // Sanitize filename
+        const fileUri = `${FileSystem.documentDirectory}${filename}`;
   
         // Convert response to base64
         const arrayBuffer = await res.arrayBuffer();
